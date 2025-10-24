@@ -37,6 +37,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "b663614a-67f1-4ee5-8ddd-457898a005e8"
+      }
+    },
+    "owner": "wnrock"
   }
 }
