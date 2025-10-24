@@ -1,0 +1,36 @@
+# === Build & Output Artifacts ===
+build
+dist
+out
+coverage
+
+# === Project & Dependency Folders ===
+node_modules
+.expo
+.husky
+.vscode
+
+# === Assets ===
+assets
+
+# === Dependency Lock Files ===
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# === Root Config Files ===
+app.json
+package.json
+*.config.js
+*.config.ts
+tsconfig.json
+expo-env.d.ts
+.prettierrc
+
+# === System Files ===
+.DS_Store
+Thumbs.db
+
+# === Text Files ===
+*.log
+*.md
