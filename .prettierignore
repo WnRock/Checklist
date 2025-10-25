@@ -19,7 +19,6 @@ yarn.lock
 pnpm-lock.yaml
 
 # === Root Config Files ===
-app.json
 package.json
 *.config.js
 *.config.ts
