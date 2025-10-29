@@ -1,17 +1,31 @@
-name: Build Android App
+name: Build and Release
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - "v*"
 
 jobs:
   build:
-    name: Build
+    name: Build ${{ matrix.arch }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: ["armeabi-v7a", "arm64-v8a", "x86", "x86_64", "universal"]
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v6
+      - name: Checkout repository
+        uses: actions/checkout@v5
+      - name: Set Build Version and Architecture
+        run: |
+          CHECKLIST_VERSION="${GITHUB_REF_NAME#v}"
+          CHECKLIST_ARCH="${{ matrix.arch }}"
+          CHECKLIST_ARTIFACTS_DIR="ci_build/${{ matrix.arch }}"
+          echo "CHECKLIST_BUILD_VERSION=$CHECKLIST_VERSION" >> $GITHUB_ENV
+          echo "CHECKLIST_BUILD_ARCH=$CHECKLIST_ARCH" >> $GITHUB_ENV
+          echo "EAS_LOCAL_BUILD_ARTIFACTS_DIR=$CHECKLIST_ARTIFACTS_DIR" >> $GITHUB_ENV
+          echo "Building version: $CHECKLIST_VERSION for arch: $CHECKLIST_ARCH"
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
         with:
           node-version: 18.x
           cache: npm
@@ -24,7 +38,42 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Build Locally
-        run: eas build --platform android --profile preview --non-interactive --wait --local
-      - run: |
-          echo "Build triggered successfully"
-          tree .
+        run: eas build --platform android --profile production --non-interactive --wait --local
+      - name: Verify Build Artifact
+        run: |
+          CHECKLIST_FILE_COUNT=$(find "$EAS_LOCAL_BUILD_ARTIFACTS_DIR" -type f | wc -l)
+          if [ "$CHECKLIST_FILE_COUNT" -ne 1 ]; then
+            echo "Error: Expected exactly 1 file, but found $CHECKLIST_FILE_COUNT files"
+            exit 1
+          fi
+          CHECKLIST_ARTIFACT_PATH=$(find "$EAS_LOCAL_BUILD_ARTIFACTS_DIR" -type f)
+          echo "CHECKLIST_BUILD_ARTIFACT_PATH=$CHECKLIST_ARTIFACT_PATH" >> $GITHUB_ENV
+          echo "Build artifact verification passed: $CHECKLIST_ARTIFACT_PATH"
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: checklist-${{ github.ref_name }}-${{ matrix.arch }}.apk
+          path: ${{ env.CHECKLIST_BUILD_ARTIFACT_PATH }}
+          if-no-files-found: error
+          retention-days: 1
+
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download All Artifacts
+        uses: actions/download-artifact@v5
+        with:
+          path: checklist-release-artifacts
+          merge-multiple: true
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: checklist-release-artifacts/*.apk
+          generate_release_notes: true
+          draft: true
+          prerelease: false
+          fail_on_unmatched_files: true
