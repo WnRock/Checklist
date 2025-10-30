@@ -46,9 +46,10 @@ jobs:
             echo "Error: Expected exactly 1 file, but found $CHECKLIST_FILE_COUNT files"
             exit 1
           fi
-          CHECKLIST_ARTIFACT_PATH=$(find "$EAS_LOCAL_BUILD_ARTIFACTS_DIR" -type f)
-          echo "CHECKLIST_BUILD_ARTIFACT_PATH=$CHECKLIST_ARTIFACT_PATH" >> $GITHUB_ENV
-          echo "Build artifact verification passed: $CHECKLIST_ARTIFACT_PATH"
+          CHECKLIST_BUILD_ARTIFACT_PATH="$EAS_LOCAL_BUILD_ARTIFACTS_DIR/checklist-${{ github.ref_name }}-${{ matrix.arch }}.apk"
+          mv $(find "$EAS_LOCAL_BUILD_ARTIFACTS_DIR" -type f) "$CHECKLIST_BUILD_ARTIFACT_PATH"
+          echo "CHECKLIST_BUILD_ARTIFACT_PATH=$CHECKLIST_BUILD_ARTIFACT_PATH" >> $GITHUB_ENV
+          echo "Build artifact: $CHECKLIST_BUILD_ARTIFACT_PATH"
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -74,6 +75,6 @@ jobs:
         with:
           files: checklist-release-artifacts/*.apk
           generate_release_notes: true
-          draft: true
+          draft: false
           prerelease: false
           fail_on_unmatched_files: true
