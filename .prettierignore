@@ -21,6 +21,7 @@ pnpm-lock.yaml
 # === Root Config Files ===
 package.json
 *.config.js
+!app.config.js
 *.config.ts
 tsconfig.json
 expo-env.d.ts

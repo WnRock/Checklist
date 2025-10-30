@@ -53,6 +53,8 @@ module.exports = {
           },
         },
       ],
+      "expo-font",
+      "expo-web-browser",
     ],
     experiments: {
       typedRoutes: true,
