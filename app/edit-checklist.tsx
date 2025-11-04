@@ -422,6 +422,7 @@ const createStyles = (colors: any) =>
       letterSpacing: 0.5,
     },
     titleInput: {
+      fontFamily: "SpaceMono-Regular",
       backgroundColor: colors.surface,
       borderWidth: 2,
       borderColor: colors.borderStrong,
@@ -438,6 +439,7 @@ const createStyles = (colors: any) =>
       marginBottom: 16,
     },
     addItemInput: {
+      fontFamily: "SpaceMono-Regular",
       backgroundColor: colors.background,
       borderWidth: 1,
       borderColor: colors.borderStrong,
@@ -556,6 +558,7 @@ const createStyles = (colors: any) =>
       borderColor: colors.borderStrong,
     },
     itemInput: {
+      fontFamily: "SpaceMono-Regular",
       backgroundColor: colors.background,
       borderWidth: 1,
       borderColor: colors.borderStrong,
