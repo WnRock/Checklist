@@ -88,17 +88,23 @@ export default function EditChecklist() {
   };
 
   const handleAddItem = () => {
-    if (newItemChallenge.trim() && newItemResponse.trim()) {
-      const newItem: ChecklistItem = {
-        id: `${Date.now()}`,
-        challenge: newItemChallenge.trim(),
-        response: newItemResponse.trim(),
-        checked: false,
-      };
-      setItems([...items, newItem]);
-      setNewItemChallenge("");
-      setNewItemResponse("");
+    if (!newItemChallenge.trim() || !newItemResponse.trim()) {
+      setModalMessage(
+        "Both Challenge and Response fields are required to add an item.",
+      );
+      setShowModal(true);
+      return;
     }
+    
+    const newItem: ChecklistItem = {
+      id: `${Date.now()}`,
+      challenge: newItemChallenge.trim(),
+      response: newItemResponse.trim(),
+      checked: false,
+    };
+    setItems([...items, newItem]);
+    setNewItemChallenge("");
+    setNewItemResponse("");
   };
 
   const handleDeleteItem = (itemId: string) => {
