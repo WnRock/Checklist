@@ -95,7 +95,7 @@ export default function EditChecklist() {
       setShowModal(true);
       return;
     }
-    
+
     const newItem: ChecklistItem = {
       id: `${Date.now()}`,
       challenge: newItemChallenge.trim(),
@@ -178,6 +178,7 @@ export default function EditChecklist() {
             value={editingItemChallenge}
             onChangeText={setEditingItemChallenge}
             placeholder="Challenge"
+            placeholderTextColor={colors.placeholder}
             autoFocus
           />
           <TextInput
@@ -185,6 +186,7 @@ export default function EditChecklist() {
             value={editingItemResponse}
             onChangeText={setEditingItemResponse}
             placeholder="Response"
+            placeholderTextColor={colors.placeholder}
           />
           <View style={styles.itemButtonsRow}>
             <TouchableOpacity
